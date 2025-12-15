@@ -1,11 +1,15 @@
-const { io } = require("../server");
+const mqtt = require("mqtt");
 
-client.on("message", (topic, message) => {
-  if (topic === "esp32/led/status") {
-    ledStatus = message.toString();
-    console.log("💡 LED Status:", ledStatus);
+const client = mqtt.connect(process.env.MQTT_BROKER_URL || "mqtt://test.mosquitto.org");
 
-    // 🔥 Send live update to frontend
-    io.emit("ledStatus", ledStatus);
-  }
+// When connected
+client.on("connect", () => {
+  console.log("Connected to MQTT broker");
 });
+
+// When receiving messages
+client.on("message", (topic, message) => {
+  console.log(`Received message: ${message} from topic: ${topic}`);
+});
+
+module.exports = client;

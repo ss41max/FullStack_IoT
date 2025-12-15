@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const client = require("../mqtt/mqttClient");
 const { publishLedCommand, getLedStatus } = require("../mqtt/mqttClient");
 
 router.post("/toggle", (req, res) => {
