@@ -1,15 +1,27 @@
 const mqtt = require("mqtt");
 
-const client = mqtt.connect(process.env.MQTT_BROKER_URL || "mqtt://test.mosquitto.org");
+const client = mqtt.connect(process.env.MQTT_BROKER_URL || "mqtt://broker.hivemq.com");
 
-// When connected
+let ledStatus = "OFF";
+
 client.on("connect", () => {
-  console.log("Connected to MQTT broker");
+  console.log("Connected to MQTT Broker");
+  client.subscribe("esp32/led/status");
 });
 
-// When receiving messages
 client.on("message", (topic, message) => {
-  console.log(`Received message: ${message} from topic: ${topic}`);
+  if (topic === "esp32/led/status") {
+    ledStatus = message.toString();
+    console.log("LED Status Updated:", ledStatus);
+  }
 });
 
-module.exports = client;
+function publishLedCommand(state) {
+  client.publish("esp32/led/set", state);
+}
+
+function getLedStatus() {
+  return ledStatus;
+}
+
+module.exports = { client, publishLedCommand, getLedStatus };
