@@ -1,46 +1,38 @@
-const API_BASE = "http://localhost:3000/api";
+// Backend API
+const API_BASE = "https://fullstack-iot.onrender.com";
 
 const statusEl = document.getElementById("status");
 const onBtn = document.getElementById("onBtn");
 const offBtn = document.getElementById("offBtn");
-const socket = io("http://localhost:3000");
 
+// No socket.io because render backend is not running socket.io
+// Remove: const socket = io("http://localhost:3000");
+
+// Send LED ON/OFF command
 async function setLed(state) {
-    socket.on("ledStatus", (status) => {
-  document.getElementById("status").textContent = "LED: " + status;
-});
-document.getElementById("onBtn").onclick = () => {
-  fetch("/led/set?state=ON", { method: "POST" });
-};
-
-document.getElementById("offBtn").onclick = () => {
-  fetch("/led/set?state=OFF", { method: "POST" });
-};
-
   try {
-    await fetch(`${API_BASE}/led`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ state }),
-    });
+    const res = await fetch(`${API_BASE}/led/${state.toLowerCase()}`);
+    const data = await res.json();
+    console.log("LED Response:", data);
   } catch (err) {
-    console.error("Failed to send command");
+    console.error("Error sending LED command", err);
   }
 }
 
+// Get status every second
 async function getStatus() {
   try {
     const res = await fetch(`${API_BASE}/status`);
     const data = await res.json();
-    statusEl.textContent = data.led;
+    statusEl.textContent = "LED: " + data.led;
   } catch (err) {
     statusEl.textContent = "OFFLINE";
   }
 }
 
+// Button events
 onBtn.addEventListener("click", () => setLed("ON"));
 offBtn.addEventListener("click", () => setLed("OFF"));
 
+// Auto refresh status
 setInterval(getStatus, 1000);
