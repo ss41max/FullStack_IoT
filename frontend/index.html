@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>ESP32 LED Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script defer src="app.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
   <div class="container">
-    <h1>ESP32 LED Control</h1>
+
+    <h1 class="title">ESP32 LED Control Panel</h1>
 
     <div class="card">
-      <p>Status: <span id="status">Loading...</span></p>
+      <div class="status-box">
+        <p>Current LED Status:</p>
+        <span id="status" class="status-text">Loading...</span>
+      </div>
 
-      <div class="buttons">
-        <button id="onBtn">LED ON</button>
-        <button id="offBtn">LED OFF</button>
+      <div class="button-group">
+        <button id="onBtn" class="btn on">Turn ON</button>
+        <button id="offBtn" class="btn off">Turn OFF</button>
       </div>
     </div>
+
   </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
